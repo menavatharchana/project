@@ -1,0 +1,231 @@
+import tkinter as tk
+from PIL import Image, ImageTk, ImageSequence
+from tkinter import messagebox, Toplevel, Button, Entry
+
+
+
+instructions  = ('You can use this app to solve all your digital calculations in seconds!')
+equation = ""
+class AnimatedApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("WISE Project, Team 4")
+
+        # Load the animated GIF
+        self.gif_path = "c.gif"
+        self.gif = Image.open(self.gif_path)
+        #self.gif = self.gif.resize((1100, 900))
+        self.frames = [ImageTk.PhotoImage(frame.copy().convert("RGBA")) for frame in ImageSequence.Iterator(self.gif)]
+        self.frame_index = 0
+        self.animation_running = False
+
+        # Create a canvas for the animated background
+        self.canvas = tk.Canvas(root, width=1920, height=1080,background = "dark slate gray")
+        self.canvas.pack(fill="both", expand=True)
+
+        # Display the first frame of the GIF
+        self.gif_label = tk.Label(root)
+        self.gif_label.place(relx=0.5, rely=0.5, anchor="center")
+
+        # Title block
+        self.title_label = tk.Label(root, text="Welcome to our Digital Calculator!", font=("Georgia", 24, 'bold'), borderwidth=10, relief='raised', fg='black', bg='palevioletred2')
+        self.title_label.config(bg=self.title_label.cget("bg")) # Set background to current color
+        self.title_label.place(relx=0.5, rely=0.1, anchor="center")
+
+        # Start button
+        self.start_button = tk.Button(root, text="Start", font=("Arial", 20, 'bold'), borderwidth=5, relief='raised', fg='black', bg='pink', command=self.calc)
+        self.start_button.place(relx=0.2, rely=0.3, anchor="center")
+
+        # Help button
+        self.help_button = tk.Button(root, text="Help", font=("Arial", 20, 'bold'), borderwidth=5, relief='raised', fg='black', bg='pink', command=self.show_help)
+        self.help_button.place(relx=0.2, rely=0.5, anchor="center")
+
+        # Info button
+        self.info_button = tk.Button(root, text="Info", font=("Arial", 20, 'bold'), borderwidth=5, relief='raised', fg='black', bg='pink', command=self.show_info)
+        self.info_button.place(relx=0.2, rely=0.7, anchor="center")
+
+        # Start the animation automatically when the window loads
+        self.start_animation()
+
+    def start_animation(self):
+        self.animation_running = True
+        self.animate_gif()
+        # Uncomment the line below if you want a message box when the animation starts automatically
+        # messagebox.showinfo("Start", "Animation has started!")
+
+    def stop_animation(self):
+        self.animation_running = False
+
+    def calc(self):
+        self.withdraw_window()
+        main_window = Toplevel(self.root)
+        self.main_window =main_window
+        main_window.title("Digital Calculator")
+        main_window.geometry("1920x1000")
+
+        # Load background image
+        self.bg_image = Image.open("m.gif")
+        self.bg_image = self.bg_image.resize((1920, 1000))
+        self.bg_photo = ImageTk.PhotoImage(self.bg_image)
+
+        # Create a canvas to place the background image
+        canvas = tk.Canvas(main_window, width=1920, height=1000)
+        canvas.pack(fill="both", expand=True)
+        canvas.create_image(0, 0, image=self.bg_photo, anchor="nw")
+       
+        equation = ""
+
+        def show(value):
+            global equation
+            equation+=value
+            label_result.config(text=equation)
+    
+        def backspace():
+            global equation
+            equation = equation[:-1]
+            label_result.config(text=equation)
+
+        def clear():
+            global equation
+            equation=""
+            label_result.config(text=equation)
+
+        def calculate():
+            global equation
+            result=""
+            if equation !="":
+                try:
+                    result=eval(equation)
+                except:
+                    result="error"
+                    equation=""
+
+            label_result.config(text=result)
+
+
+        b = tk.Label(main_window,width=112,height=43,bg = "black", fg = 'white',relief='raised',bd = 10 )
+        b.pack()
+        b.place(x = 350, y = 50)
+
+        label_result=tk.Label(main_window,width=34,height=3,text="",font=("arial",30),relief='raised',fg = 'black',bd=10)
+        label_result.pack()
+        label_result.place(x = 350, y = 40)
+
+        Button(main_window,text="c", width=7, height=1, font=("arial",30,"bold"), bd=1,fg="#fff",bg="#3697f5",command=lambda: clear()) .place(x=375,y=210)
+        Button(main_window,text=".", width=7, height=1, font=("arial",30,"bold"), bd=1,fg="#fff",bg="#2a2d36",command=lambda: show(".")).place(x=565,y=210)
+        Button(main_window,text="/",  width=7, height=1, font=("arial",30,"bold"), bd=1,fg="#fff",bg="#2a2d36",command=lambda: show("/")).place(x=755,y=210)
+        Button(main_window,text="*",  width=7, height=1, font=("arial",30,"bold"), bd=1,fg="#fff",bg="#2a2d36",command=lambda: show("*")).place(x=950,y=210)
+
+
+        Button(main_window,text="7", width=7, height=1, font=("arial",30,"bold"), bd=1,fg="#fff",bg="#2a2d36",command=lambda: show("7")).place(x=375,y=310)
+        Button(main_window,text="8",  width=7, height=1, font=("arial",30,"bold"), bd=1,fg="#fff",bg="#2a2d36",command=lambda: show("8")).place(x=565,y=310)
+        Button(main_window,text="9",  width=7, height=1, font=("arial",30,"bold"), bd=1,fg="#fff",bg="#2a2d36",command=lambda: show("9")).place(x=755,y=310)
+        Button(main_window,text="-",  width=7, height=1, font=("arial",30,"bold"), bd=1,fg="#fff",bg="#2a2d36",command=lambda: show("-")).place(x=950,y=310)
+
+        Button(main_window,text="4", width=7, height=1, font=("arial",30,"bold"), bd=1,fg="#fff",bg="#2a2d36",command=lambda: show("4")).place(x=375,y=410)
+        Button(main_window,text="5",  width=7, height=1, font=("arial",30,"bold"), bd=1,fg="#fff",bg="#2a2d36",command=lambda: show("5")).place(x=565,y=410)
+        Button(main_window,text="6",  width=7, height=1, font=("arial",30,"bold"), bd=1,fg="#fff",bg="#2a2d36",command=lambda: show("6")).place(x=755,y=410)
+        Button(main_window,text="+",  width=7, height=1, font=("arial",30,"bold"), bd=1,fg="#fff",bg="#2a2d36",command=lambda: show("+")).place(x=950,y=410)
+
+        Button(main_window,text="1", width=7, height=1, font=("arial",30,"bold"), bd=1,fg="#fff",bg="#2a2d36",command=lambda: show("1")).place(x=375,y=510)
+        Button(main_window,text="2", width=7, height=1, font=("arial",30,"bold"), bd=1,fg="#fff",bg="#2a2d36",command=lambda: show("2")).place(x=565,y=510)
+        Button(main_window,text="3", width=7, height=1, font=("arial",30,"bold"), bd=1,fg="#fff",bg="#2a2d36",command=lambda: show("3")).place(x=755,y=510)
+        Button(main_window,text="⌫", width=7, height=1, font=("arial",30, "bold"), bd=1,fg="#fff",bg="#2a2d36",command=lambda: backspace()).place(x=950,y=510)
+
+
+        Button(main_window,text="0", width=7,height=1, font=("arial",30,"bold"), bd=1,fg="#fff",bg="#2a2d36",command=lambda: show("0")).place(x=375,y=610)
+        Button(main_window,text="(", width=7,height=1, font=("arial",30,"bold"), bd=1,fg="#fff",bg="#2a2d36",command=lambda: show("(")).place(x=565,y=610)
+        Button(main_window,text=")", width=7, height=1, font=("arial",30,"bold"), bd=1,fg="#fff",bg="#2a2d36",command=lambda: show(")")).place(x=755,y=610)
+        Button(main_window,text="=", width=7, height=1, font=("arial",30,"bold"), bd=1,fg="#fff",bg="#fe9037",command=lambda: calculate()).place(x=950,y=610)
+
+        # Back button
+        #self.back_button = Button(new_window, width=5,height=1, text='Back',  command=self.go_back)
+        #self.back_button.place(x=800, y = 400)
+
+        #self.back_button = Button(main_window, text="Back", font=("Arial", 20, 'bold'), bd=7, relief='raised', fg='black', bg='pink', command=self.go_back1)
+        #self.back_button.place(x=200, y = 400, anchor="center")
+
+        # Exit button
+        self.exit_button = Button(main_window, text="Exit", font=("Arial", 20, 'bold'), bd=7, relief='raised', fg='black', bg='indianred1', command = self.exit)
+        self.exit_button.place(x = 1300, y = 400, anchor = "center")
+
+        self.start_animation()
+
+    def exit(self):
+        self.withdraw_window()
+        exit_window = Toplevel(self.root)
+        self.exit_window =exit_window
+        exit_window.title("Exit Calculator")
+        exit_window.geometry("1920x1000")
+
+        # Load the animated GIF
+        self.gif_path = "thanks.gif"
+        self.gif = Image.open(self.gif_path)
+        #self.gif = self.gif.resize((1100, 900))
+        self.frames = [ImageTk.PhotoImage(frame.copy().convert("RGBA")) for frame in ImageSequence.Iterator(self.gif)]
+        self.frame_index = 0
+        self.animation_running = False
+
+        # Create a canvas for the animated background
+        self.canvas = tk.Canvas(exit_window, width=1920, height=1080,background = "light cyan")
+        self.canvas.pack(fill="both", expand=True)
+
+        # Display the first frame of the GIF
+        self.gif_label = tk.Label(exit_window)
+        self.gif_label.place(relx=0.3, rely=0.5, anchor="center")
+
+        
+
+        # Title block
+        self.title_label = tk.Label(exit_window, text="Thanks for using our app!", font=("Georgia", 24, 'bold'), borderwidth=10, relief='raised', fg='black', bg='palevioletred2')
+        self.title_label.config(bg=self.title_label.cget("bg")) # Set background to current color
+        self.title_label.place(relx=0.45, rely=0.09, anchor="center")
+        
+
+        # confirmation block
+        self.exit_label = tk.Label(exit_window, text="Are you sure you want to exit?", font=("Arial", 24, 'bold'), borderwidth=5, relief='raised', fg='black', bg='rosybrown1')
+        self.exit_label.config(bg=self.exit_label.cget("bg")) # Set background to current color
+        self.exit_label.place(relx=0.75, rely=0.35, anchor="center")
+
+        # Yes button
+        self.yes_button = tk.Button(exit_window, text="Yes", font=("Arial", 20, 'bold'), borderwidth=5, relief='raised', fg='black', bg='misty rose', command=self.confirm_exit)
+        self.yes_button.place(relx=0.7, rely=0.5, anchor="center")
+
+        # No button
+        self.no_button = tk.Button(exit_window, text="No", font=("Arial", 20, 'bold'), borderwidth=5, relief='raised', fg='black', bg='misty rose', command=self.go_back2)
+        self.no_button.place(relx=0.8, rely=0.5, anchor="center")
+
+        self.start_animation()
+
+    def confirm_exit(self):
+        self.root.quit()
+
+
+    def go_back1(self):
+        root.deiconify()
+
+    def go_back2(self):
+        self.main_window.deiconify()
+
+
+    def animate_gif(self):
+        if self.animation_running:
+            frame = self.frames[self.frame_index]
+            self.gif_label.config(image=frame)
+            self.frame_index = (self.frame_index + 1) % len(self.frames)
+            self.root.after(100, self.animate_gif)  # Change frame every 100 ms
+
+    def withdraw_window(self):
+        root.withdraw()
+
+    def show_help(self):
+        messagebox.showinfo("Help", instructions)
+
+    def show_info(self):
+        messagebox.showinfo("Info", "This app was made by:\n \n23WH1A0416 - Sanjana\n23WH1A0417 - Archana\n23WH1A0418 - Shahnaz\n23WH1A0419 - Cynthana\n23WH1A0420 - Sudhamaini")
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = AnimatedApp(root)
+    root.mainloop()
+
